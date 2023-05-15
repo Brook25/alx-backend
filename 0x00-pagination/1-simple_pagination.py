@@ -50,6 +50,6 @@ class Server:
         d_length = len(d_set)
         try:
             ix = index_range(page, page_size)
-            return dataset[ix[0]:ix[1]]
+            return d_set[ix[0]:ix[1]]
         except IndexError:
             return []
