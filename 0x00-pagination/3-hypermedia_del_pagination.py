@@ -48,11 +48,11 @@ class Server:
         assert 0 <= index < d_length
         res = {}
         data = []
-        res['index'] = ix
+        res['index'] = index
         for i in range(page_size):
             while True:
-                cur = d_set.get(ix)
-                ix += 1
+                cur = d_set.get(index)
+                index += 1
                 if cur is not None:
                     break
             data.append(cur)
@@ -60,7 +60,7 @@ class Server:
         res['data'] = data
         res['page_size'] = len(data)
         if d_set.get(index):
-            res['next_index'] = ix
+            res['next_index'] = index
         else:
             res['next_index'] = None
         return res
