@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """ module contains class LIFOcache
 """
+
 from base_caching import BaseCaching
 
 
@@ -23,8 +24,8 @@ class LIFOCache(BaseCaching):
         if key is None or item is None:
             pass
         else:
-            data_len = len(self.cache_data)
-            if data_len >= BaseCaching.MAX_ITEMS and key not in self.cache_data:
+            datalen = len(self.cache_data)
+            if datalen >= BaseCaching.MAX_ITEMS and key not in self.cache_data:
                 print("DISCARD: {}".format(self.order[-1]))
                 del self.cache_data[self.order[-1]]
                 del self.order[-1]
@@ -32,6 +33,7 @@ class LIFOCache(BaseCaching):
                 del self.order[self.order.index(key)]
             self.order.append(key)
             self.cache_data[key] = item
+
     def get(self, key):
         """
             method returns value linked to the given key
@@ -39,4 +41,3 @@ class LIFOCache(BaseCaching):
         if key is not None and key in self.cache_data.keys():
             return self.cache_data[key]
         return None
-
