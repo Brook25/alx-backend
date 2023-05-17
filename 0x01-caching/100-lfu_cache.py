@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-""" module contains class LFUCache that defines a caching system
+""" module contains class LFUCache that
+defines a caching system
 """
 from base_caching import BaseCaching
 
@@ -26,24 +27,24 @@ class LFUCache(BaseCaching):
         else:
             datalen = len(self.cache_data)
             if datalen >= BaseCaching.MAX_ITEMS and key not in self.cache_data:
-                Lfu = min(self.frequency.values())
+                lf = min(self.frequency.values())
                 keys = []
-                for key, value in self.frequency.items():
-                    if value == Lfu:
-                        keys.append(key)
+                for k, v in self.frequency.items():
+                    if value == lf:
+                        keys.append(k)
                 if len(keys) > 1:
-                    Lru_lfu = {}
-                    for key in keys:
-                        Lru_lfu[k] = self.usage.index(key)
-                    remove = min(Lru_lfu.values())
+                    lr_lf = {}
+                    for k in keys:
+                        lr_lf[k] = self.usage.index(k)
+                    remove = min(lr_lf.values())
                     remove = self.usage[remove]
                 else:
-                    remove = Lfu_keys[0]
+                    remove = keys[0]
 
-                print("DISCARD: {}".format(discard))
-                del self.cache_data[discard]
-                del self.usage[self.usage.index(discard)]
-                del self.frequency[discard]
+                print("DISCARD: {}".format(remove))
+                del self.cache_data[remove]
+                del self.usage[self.usage.index(remove)]
+                del self.frequency[remove]
             if key in self.frequency:
                 self.frequency[key] += 1
             else:
