@@ -30,7 +30,7 @@ class LFUCache(BaseCaching):
                 lf = min(self.frequency.values())
                 keys = []
                 for k, v in self.frequency.items():
-                    if value == lf:
+                    if v == lf:
                         keys.append(k)
                 if len(keys) > 1:
                     lr_lf = {}
