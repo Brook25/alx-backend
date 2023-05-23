@@ -1,18 +1,12 @@
 #!/usr/bin/env python3
+"""A Basic Flask app.
 """
-mocule contains Flask app
-"""
-from flask import (
-    Flask,
-    render_template,
-    request
-)
 from flask_babel import Babel
+from flask import Flask, render_template, request
 
 
-class Config(object):
-    """
-    class for configuration for Babel
+class Config:
+    """Represents a Flask Babel configuration.
     """
     LANGUAGES = ["en", "fr"]
     BABEL_DEFAULT_LOCALE = "en"
@@ -21,24 +15,24 @@ class Config(object):
 
 app = Flask(__name__)
 app.config.from_object(Config)
+app.url_map.strict_slashes = False
 babel = Babel(app)
 
 
 @babel.localeselector
-def get_locale():
+def get_locale() -> str:
+    """Retrieves the locale for a web page.
     """
-    class to select and return the best language match based on supported languages
-    """
-    return request.accept_languages.best_match(app.config['LANGUAGES'])
+    return request.accept_languages.best_match(app.config["LANGUAGES"])
+# babel.init_app(app, locale_selector=get_locale)
 
 
-@app.route('/', strict_slashes=False)
-def index() -> str:
-    """
-    func handles / route
+@app.route('/')
+def get_index() -> str:
+    """The home/index page.
     """
     return render_template('2-index.html')
 
 
-if __name__ == "__main__":
-    app.run(port="5000", host="0.0.0.0", debug=True)
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
