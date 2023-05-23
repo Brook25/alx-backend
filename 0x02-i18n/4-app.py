@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""Force locale with URL parameter
+"""module forces locale with URL parameter
 """
 from flask_babel import Babel
 from flask import Flask, render_template, request
 
 
 class Config:
-    """Force locate with URL parameter.
+    """class that forces locate with URL parameter.
     """
     LANGUAGES = ["en", "fr"]
     BABEL_DEFAULT_LOCALE = "en"
@@ -21,12 +21,12 @@ babel = Babel(app)
 
 @babel.localeselector
 def get_locale() -> str:
-    """Retrieves the locale for a web page.
+    """func retrieves locale for a web page.
     """
-    lang = request.args.get('locale')
+    lan = request.args.get('locale')
 
-    if lang in app.config['LANGUAGES']:
-        return lang
+    if lan in app.config['LANGUAGES']:
+        return lan
     return request.accept_languages.best_match(app.config["LANGUAGES"])
 
 

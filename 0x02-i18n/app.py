@@ -57,8 +57,8 @@ def before_request():
     """
     func adds user to flask.g if user is found
     """
-    user = get_user()
-    g.user = user
+    usr = get_user()
+    g.user = usr
     time_now = pytz.utc.localize(datetime.utcnow())
     time = time_now.astimezone(timezone(get_timezone()))
     locale.setlocale(locale.LC_TIME, (get_locale(), 'UTF-8'))

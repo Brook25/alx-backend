@@ -52,8 +52,8 @@ def before_request():
     """
     func adds user to flask.g if user is found
     """
-    user = get_user()
-    g.user = user
+    usr = get_user()
+    g.user = usr
 
 
 @babel.localeselector

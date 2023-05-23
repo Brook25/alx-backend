@@ -57,9 +57,9 @@ def get_locale():
     """
     func selects and returns language match based on supported languages
     """
-    loc = request.args.get('locale')
-    if loc in app.config['LANGUAGES']:
-        return loc
+    locn = request.args.get('locale')
+   if locn in app.config['LANGUAGES']:
+        return locn
     return request.accept_languages.best_match(app.config['LANGUAGES'])
 
 
