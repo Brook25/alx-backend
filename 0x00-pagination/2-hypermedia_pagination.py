@@ -49,6 +49,9 @@ class Server:
         return d_set[ix_r[0]:ix_r[1]]
 
     def get_hyper(self, page: int = 1, page_size: int = 10) -> Dict:
+        """returns hyper media paginated content
+        with user navigation system.
+        """
         assert type(page_size) is int and page_size > 0
         assert type(page) is int and page > 0
         data = self.get_page(page, page_size)
