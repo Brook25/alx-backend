@@ -1,41 +1,31 @@
 #!/usr/bin/env python3
-"""FIFO caching system
+"""LIFO caching system
 """
 
 from base_caching import BaseCaching
 
 
-class FIFOCache(BaseCaching):
-    """FIFO caching system
-    """
+class LIFOCache(BaseCaching):
     def __init__(self):
-        """initialize FIFOCache instance
-        """
         super().__init__()
-        self.tracker = []
+        self.discard = None
 
     def put(self, key, item):
-        """update cache system with new value
-        """
         if not (key and item):
             return
         self.cache_data[key] = item
-        if key not in self.tracker:
-            self.tracker.append(key)
         if len(self.cache_data) > self.MAX_ITEMS:
-            discarded = self.tracker.pop(0)
-            self.cache_data.pop(discarded)
-            print('DISCARD: {}'.format(discarded))
+            self.cache_data.pop(self.discard)
+            print('Discard: {}'.format(self.discard))
+        if len(self.cache_data) == self.MAX_ITEMS:
+            self.discard = key
 
     def get(self, key):
-        """return value associated with key
-        """
         if key:
             return self.cache_data.get(key)
 
 
-
-my_cache = FIFOCache()
+my_cache = LIFOCache()
 my_cache.put("A", "Hello")
 my_cache.put("B", "World")
 my_cache.put("C", "Holberton")
@@ -46,4 +36,6 @@ my_cache.print_cache()
 my_cache.put("C", "Street")
 my_cache.print_cache()
 my_cache.put("F", "Mission")
+my_cache.print_cache()
+my_cache.put("G", "San Francisco")
 my_cache.print_cache()
