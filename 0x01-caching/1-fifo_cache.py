@@ -18,7 +18,6 @@ class FIFOCache(BaseCaching):
         """update cache system with new value
         """
         if not (key and item):
-            print('k')
             return
         self.cache_data[key] = item
         self.tracker.append(key)
