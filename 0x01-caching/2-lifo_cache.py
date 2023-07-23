@@ -6,11 +6,17 @@ from base_caching import BaseCaching
 
 
 class LIFOCache(BaseCaching):
+    """LIFO caching system
+    """
     def __init__(self):
+        """Init cache system
+        """
         super().__init__()
         self.discard = None
 
     def put(self, key, item):
+        """Adds data to caching system
+        """
         if not (key and item):
             return
         self.cache_data[key] = item
@@ -21,5 +27,7 @@ class LIFOCache(BaseCaching):
             self.discard = key
 
     def get(self, key):
+        """Returns value associated with key in cache
+        """
         if key:
             return self.cache_data.get(key)
