@@ -17,8 +17,8 @@ class FIFOCache(BaseCaching):
     def put(self, key, item):
         """update cache system with new value
         """
-        self.cache_data[key] = item
-        self.tracker.append(key)
+        if not (key and item):
+            return
         if len(self.cache_data) > self.MAX_ITEMS:
             discarded = self.tracker.pop(0)
             self.cache_data.pop(discarded)
