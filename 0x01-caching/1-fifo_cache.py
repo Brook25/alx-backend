@@ -6,11 +6,17 @@ from base_caching import BaseCaching
 
 
 class FIFOCache(BaseCaching):
+    """FIFO caching system
+    """
     def __init__(self):
+        """initialize FIFOCache instance
+        """
         super().__init__()
         self.tracker = []
 
     def put(self, key, item):
+        """update cache system with new value
+        """
         self.cache_data[key] = item
         self.tracker.append(key)
         if len(self.cache_data) > self.MAX_ITEMS:
@@ -19,5 +25,7 @@ class FIFOCache(BaseCaching):
             print('DISCARD: {}'.format(discarded))
 
     def get(self, key):
+        """return value associated with key
+        """
         if key:
             return self.cache_data.get(key)
