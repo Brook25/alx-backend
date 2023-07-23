@@ -18,7 +18,10 @@ class FIFOCache(BaseCaching):
         """update cache system with new value
         """
         if not (key and item):
+            print('k')
             return
+        self.cache_data[key] = item
+        self.tracker.append(key)
         if len(self.cache_data) > self.MAX_ITEMS:
             discarded = self.tracker.pop(0)
             self.cache_data.pop(discarded)
