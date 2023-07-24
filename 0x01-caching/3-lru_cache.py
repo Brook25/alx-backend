@@ -4,6 +4,7 @@
 
 from base_caching import BaseCaching
 
+
 class LRUCache(BaseCaching):
     """LRU caching system
     """
@@ -21,7 +22,7 @@ class LRUCache(BaseCaching):
         self.cache_data[key] = item
         if key in self.tracker:
             self.tracker.remove(key)
-        if len(self.tracker) == self.MAX_ITEMS:
+        if len(self.cache_data) > self.MAX_ITEMS:
             discard = self.tracker.pop()
             self.cache_data.pop(discard)
             print('DISCARD: {}'.format(discard))
