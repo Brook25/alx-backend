@@ -7,7 +7,7 @@ import flask
 app = Flask(__name__)
 
 
-@app.route('/')
+@app.route('/', strict_slashes=False)
 def home():
     """returns html page with simple header"""
     return render_template('0-index.html')
