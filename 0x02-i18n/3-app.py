@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""Add get_locale funtction to return
-   best match from supported languages
+"""Parametrize templates using flask-babel
 """
 from flask import Flask, render_template, request
 from flask_babel import Babel, _
