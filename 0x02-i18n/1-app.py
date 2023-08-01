@@ -1,16 +1,21 @@
 #!/usr/bin/env python3
-"""flask app implements babel"""
-
+"""configures and implements flask app and babel"""
 from flask import Flask
 from flask import render_template
 from flask_babel import Babel
-from config import Config
+
+
+class Config(object):
+    """Config class for app"""
+    LANGUAGES = ['en', 'fr']
+    DEFAULT_LOCALE = 'en'
+    DEFAULT_TIMEZONE = 'UTC'
 
 
 app = Flask(__name__)
 babel = Babel(app)
-babel.BABEL_DEFAULT_LOCALE = Config.BABEL_DEFAULT_LOCALE
-babel.BABEL_DEFAULT_TIMEZONE = Config.BABEL_DEFAULT_TIMEZONE
+babel.BABEL_DEFAULT_LOCALE = Config.DEFAULT_LOCALE
+babel.BABEL_DEFAULT_TIMEZONE = Config.DEFAULT_TIMEZONE
 app.config.from_object(Config)
 
 
