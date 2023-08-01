@@ -50,7 +50,7 @@ def before_request():
 
 @app.route('/')
 def index():
-    """returns an html page"""
+    """returns an html page with possible user login"""
     return render_template('5-index.html')
 
 
