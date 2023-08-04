@@ -3,7 +3,8 @@
 """
 from flask import Flask, render_template, request, g
 from flask_babel import Babel, _
-
+import pytz
+from datetime import datetime
 
 class Config(object):
     """app configuration class"""
@@ -25,6 +26,20 @@ app.config.from_object(Config)
 babel = Babel(app)
 
 
+@babel.timezoneselector
+def get_timezone():
+    """returns a prefered time zone from a URL parameter or user settings"""
+    try:
+        return pytz.timezone(request.args.get('timezone')).zone
+    except pytz.exceptions.UnknownTimeZoneError:
+        try:
+            return pytz.timezone(g.user.get('timezone')).zone
+        except AttributeError or pytz.exceptions.UnknownTimeZoneError:
+            pass
+    return pytz.timezone(app.config['BABEL_DEFAULT_TIMEZONE']).zone
+
+
+
 @babel.localeselector
 def get_locale():
     """returns best match to the accept languages header"""
@@ -39,11 +54,12 @@ def get_locale():
             return request.accept_languages.best_match(app.config['LANGUAGES'])
 
 
+
 def get_user(user_id):
     """gets and returns a user from users if user_id is provided"""
     if user_id and int(user_id) in users:
         return users.get(int(user_id))
-
+    
 
 @app.before_request
 def before_request():
@@ -53,10 +69,15 @@ def before_request():
         g.user = user
 
 
+
+
 @app.route('/')
 def index():
     """returns and displays html page with possible user login"""
-    return render_template('6-index.html')
+    time = datetime.now(pytz.timezone(get_timezone()))
+    time = time.strftime("%b %d, %Y, %I:%M:%S %p")
+    g.time = time
+    return render_template('index.html')
 
 
 if __name__ == "__main__":

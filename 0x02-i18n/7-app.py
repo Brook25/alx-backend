@@ -3,7 +3,8 @@
 """
 from flask import Flask, render_template, request, g
 from flask_babel import Babel, _
-
+import pytz
+from datetime import datetime
 
 class Config(object):
     """app configuration class"""
@@ -39,6 +40,22 @@ def get_locale():
             return request.accept_languages.best_match(app.config['LANGUAGES'])
 
 
+
+@babel.timezoneselector
+def get_timezone():
+    """returns a prefered time zone from a URL parameter or user settings"""
+    try:
+        return pytz.timezone(request.args.get('timezone')).zone
+    except pytz.exceptions.UnknownTimeZoneError:
+        try:
+            return pytz.timezone(g.user.get('timezone')).zone
+        except AttributeError or pytz.exceptions.UnknownTimeZoneError:
+            pass
+    return pytz.timezone(app.config['BABEL_DEFAULT_TIMEZONE']).zone
+
+
+
+
 def get_user(user_id):
     """gets and returns a user from users if user_id is provided"""
     if user_id and int(user_id) in users:
@@ -56,7 +73,8 @@ def before_request():
 @app.route('/')
 def index():
     """returns and displays html page with possible user login"""
-    return render_template('6-index.html')
+    fmt = "%m %d, %Y, %H:%M:%S %z"
+    return render_template('7-index.html', current_time=datetime.now().strftime(fmt))
 
 
 if __name__ == "__main__":
