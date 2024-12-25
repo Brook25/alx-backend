@@ -1,40 +1,34 @@
 #!/usr/bin/env python3
-""" module contains a class that defines a Fifo caching system
+"""FIFO caching system
 """
+
 from base_caching import BaseCaching
 
 
 class FIFOCache(BaseCaching):
+    """FIFO caching system
     """
-    class that defines a FIFO caching system
-    """
-
     def __init__(self):
-        """
-        Init method that initializes an instance
+        """initialize FIFOCache instance
         """
         super().__init__()
-        self.order = []
+        self.tracker = []
 
     def put(self, key, item):
+        """update cache system with new value
         """
-        method caches a key, value pair
-        """
-        if key is None or item is None:
-            pass
-        else:
-            datalen = len(self.cache_data)
-            if datalen >= BaseCaching.MAX_ITEMS and key not in self.cache_data:
-                print("DISCARD: {}".format(self.order[0]))
-                del self.cache_data[self.order[0]]
-                del self.order[0]
-            self.order.append(key)
-            self.cache_data[key] = item
+        if not (key and item):
+            return
+        self.cache_data[key] = item
+        if key not in self.tracker:
+            self.tracker.append(key)
+        if len(self.cache_data) > self.MAX_ITEMS:
+            discarded = self.tracker.pop(0)
+            self.cache_data.pop(discarded)
+            print('DISCARD: {}'.format(discarded))
 
     def get(self, key):
+        """return value associated with key
         """
-        method returns value linked to the given key
-        """
-        if key is not None and key in self.cache_data.keys():
-            return self.cache_data[key]
-        return None
+        if key:
+            return self.cache_data.get(key)

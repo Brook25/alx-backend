@@ -1,44 +1,34 @@
 #!/usr/bin/env python3
-""" BaseCaching module
+"""MRU  caching system
 """
+
 from base_caching import BaseCaching
 
 
 class MRUCache(BaseCaching):
+    """MRU caching system
     """
-    class defines a caching system
-    """
-
     def __init__(self):
-        """
-        Init method initializes an instance
+        """Init cache system
         """
         super().__init__()
-        self.usage = []
+        self.discard = None
 
     def put(self, key, item):
+        """Adds data to caching system
         """
-        mehtod caches a key, value pair
-        """
-        if key is None or item is None:
-            pass
-        else:
-            datalen = len(self.cache_data)
-            if datalen >= BaseCaching.MAX_ITEMS and key not in self.cache_data:
-                print("DISCARD: {}".format(self.usage[-1]))
-                del self.cache_data[self.usage[-1]]
-                del self.usage[-1]
-            if key in self.usage:
-                del self.usage[self.usage.index(key)]
-            self.usage.append(key)
-            self.cache_data[key] = item
+        if not (key and item):
+            return
+        self.cache_data[key] = item
+        if len(self.cache_data) > self.MAX_ITEMS:
+            self.cache_data.pop(self.discard)
+            print('DISCARD: {}'.format(self.discard))
+        if len(self.cache_data) == self.MAX_ITEMS:
+            self.discard = key
 
     def get(self, key):
+        """Returns value associated with key in cache
         """
-        mehtod returns value associated with a given key
-        """
-        if key is not None and key in self.cache_data.keys():
-            del self.usage[self.usage.index(key)]
-            self.usage.append(key)
-            return self.cache_data[key]
-        return None
+        if key and key in self.cache_data:
+            self.discard = key
+            return self.cache_data.get(key)

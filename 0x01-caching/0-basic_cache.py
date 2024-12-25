@@ -1,33 +1,19 @@
 #!/usr/bin/env python3
-""" module contains function for basechacing
+"""Module for Basic Cache system
 """
+
 from base_caching import BaseCaching
 
 
 class BasicCache(BaseCaching):
-    """
-    Function defines a class for caching information in key, value pairs
-    """
-
-    def __init__(self):
-        """
-        Init method initializes the class
-        """
-        BaseCaching.__init__(self)
-
+    """class with methods for Basic caching"""
     def put(self, key, item):
+        """puts data into the caching system
         """
-        instance method Stores a key, value pair
-        """
-        if key is None or item is None:
-            pass
-        else:
+        if key and item:
             self.cache_data[key] = item
 
     def get(self, key):
+        """gets data from the caching system
         """
-        method reurns value that is linked to a key
-        """
-        if key is not None and key in self.cache_data.keys():
-            return self.cache_data[key]
-        return None
+        return self.cache_data.get(key)

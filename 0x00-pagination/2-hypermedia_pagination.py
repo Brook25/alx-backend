@@ -1,14 +1,24 @@
 #!/usr/bin/env python3
-"""
-Nodule contains A Class with that creates simple pagination from csv data
-"""
+"""Simple pagination"""
 import csv
-from typing import List
-index_range = __import__('0-simple_helper_function').index_range
+import math
+from typing import List, Dict
+
+
+def index_range(*args, **kwargs) -> tuple:
+    """recieves current page and page size
+    returns pagination indices.
+    """
+    if args:
+        page, page_size = args
+    else:
+        page = kwargs.get('page')
+        page_size = kwargs.get('page_size')
+    return (page_size * page - page_size, page_size * page)
 
 
 class Server:
-    """Class Server to paginate a database of baby names.
+    """Server class to paginate a database of popular baby names.
     """
     DATA_FILE = "Popular_Baby_Names.csv"
 
@@ -16,50 +26,38 @@ class Server:
         self.__dataset = None
 
     def dataset(self) -> List[List]:
-        """
-        funciton reads from csv file and returns a dataset.
+        """Cached dataset
         """
         if self.__dataset is None:
             with open(self.DATA_FILE) as f:
-                read = csv.reader(f)
-                d_set = [row for row in read]
-            self.__dataset = d_set[1:]
+                reader = csv.reader(f)
+                dataset = [row for row in reader]
+            self.__dataset = dataset[1:]
 
         return self.__dataset
 
-    @staticmethod
-    def assert_positive_integer_type(value: int) -> None:
-        """
-        checks that the value is a positive integer.
-        """
-        assert type(value) is int and value > 0
-
     def get_page(self, page: int = 1, page_size: int = 10) -> List[List]:
+        """takes page and page_size and
+        returns list of rows from a dataset
         """
-        funciton returns a page of the dataset.
-        """
-        self.assert_positive_integer_type(page)
-        self.assert_positive_integer_type(page_size)
+        assert type(page_size) is int and page_size > 0
+        assert type(page) is int and page > 0
+        ix_r = index_range(page, page_size)
         d_set = self.dataset()
-        beg, end = index_range(page, page_size)
-        try:
-            data = d_set[beg:end]
-        except IndexError:
-            data = []
-        return data
+        if ix_r[1] > len(d_set):
+            return []
+        return d_set[ix_r[0]:ix_r[1]]
 
-    def get_hyper(self, page: int = 1, page_size: int = 10) -> dict:
+    def get_hyper(self, page: int = 1, page_size: int = 10) -> Dict:
+        """returns hyper media paginated content
+        with user navigation system.
         """
-        function returns a page of the dataset.
-        """
-        tot_pages = len(self.dataset()) // page_size + 1
+        assert type(page_size) is int and page_size > 0
+        assert type(page) is int and page > 0
         data = self.get_page(page, page_size)
-        res = {
-            "page": page,
-            "page_size": page_size if page_size <= len(data) else len(data),
-            "total_pages": tot_pages,
-            "data": data,
-            "prev_page": page - 1 if page > 1 else None,
-            "next_page": page + 1 if page + 1 <= tot_pages else None
-        }
-        return res
+        total_pages = math.ceil(len(self.dataset()) / page_size)
+        next_page = None if page >= total_pages else page + 1
+        prev_page = None if page == 1 else page - 1
+        return {'page_size': page_size, 'page': page,
+                'data': data, 'next_page': next_page,
+                'prev_page': prev_page, 'total_pages': total_pages}

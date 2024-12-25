@@ -1,18 +1,15 @@
 #!/usr/bin/env python3
-"""
-module contains Flask app
-"""
+"""flask app that returns simple header"""
 from flask import Flask, render_template
+import flask
 
 
 app = Flask(__name__)
 
 
 @app.route('/', strict_slashes=False)
-def index() -> str:
-    """
-    Handles / route
-    """
+def home():
+    """returns html page with simple header"""
     return render_template('0-index.html')
 
 

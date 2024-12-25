@@ -1,18 +1,14 @@
 #!/usr/bin/env python3
-"""
-This module contains the definition of an index_range helper function
-"""
-from typing import Tuple
+"""Simple helper function"""
 
 
-def index_range(page: int, page_size: int) -> Tuple[int, int]:
+def index_range(*args, **kwargs) -> tuple:
+    """recieves current page and page size
+    returns pagination indices.
     """
-    function takes two integer arguments and returns a tuple
-
-    """
-    beg, end = 0, 0
-    for i in range(page):
-        beg = end
-        end += page_size
-
-    return (beg, end)
+    if args:
+        page, page_size = args
+    else:
+        page = kwargs.get('page')
+        page_size = kwargs.get('page_size')
+    return (page_size * page - page_size, page_size * page)

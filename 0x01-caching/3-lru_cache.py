@@ -1,43 +1,37 @@
 #!/usr/bin/env python3
-""" module contains class LRUcache
+"""LRU  caching system
 """
+
 from base_caching import BaseCaching
 
 
 class LRUCache(BaseCaching):
-    """
-    class defines a caching system
+    """LRU caching system
     """
     def __init__(self):
-        """
-        Init method initializes an instance
+        """Init cache system
         """
         super().__init__()
-        self.usage = []
+        self.tracker = []
 
     def put(self, key, item):
+        """Adds data to caching system
         """
-        instance method caches a key, value pair
-        """
-        if key is None or item is None:
-            pass
-        else:
-            datalen = len(self.cache_data)
-            if datalen >= BaseCaching.MAX_ITEMS and key not in self.cache_data:
-                print("DISCARD: {}".format(self.usage[0]))
-                del self.cache_data[self.usage[0]]
-                del self.usage[0]
-            if key in self.usage:
-                del self.usage[self.usage.index(key)]
-            self.usage.append(key)
-            self.cache_data[key] = item
+        if not (key and item):
+            return
+        self.cache_data[key] = item
+        if key in self.tracker:
+            self.tracker.remove(key)
+        if len(self.tracker) == self.MAX_ITEMS:
+            discard = self.tracker.pop()
+            self.cache_data.pop(discard)
+            print('DISCARD: {}'.format(discard))
+        self.tracker.insert(0, key)
 
     def get(self, key):
+        """Returns value associated with key in cache
         """
-        method returns value associated with a given key
-        """
-        if key is not None and key in self.cache_data.keys():
-            del self.usage[self.usage.index(key)]
-            self.usage.append(key)
-            return self.cache_data[key]
-        return None
+        if key and key in self.tracker:
+            self.tracker.remove(key)
+            self.tracker.insert(0, key)
+        return self.cache_data.get(key)

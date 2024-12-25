@@ -1,32 +1,15 @@
 #!/usr/bin/env python3
+"""Choose a locale based on a passed parameter in the url
 """
-module contains Flask app
-"""
-from flask import (
-    Flask,
-    render_template,
-    request,
-    g
-)
-from flask_babel import Babel
-from typing import (
-    Dict,
-    Union
-)
+from flask import Flask, render_template, request, g
+from flask_babel import Babel, _
 
 
 class Config(object):
-    """
-    Class configuration for Babel
-    """
-    LANGUAGES = ["en", "fr"]
-    BABEL_DEFAULT_LOCALE = "en"
-    BABEL_DEFAULT_TIMEZONE = "UTC"
-
-
-app = Flask(__name__)
-app.config.from_object(Config)
-babel = Babel(app)
+    """app configuration class"""
+    LANGUAGES = ['en', 'fr']
+    BABEL_DEFAULT_LOCALE = 'en'
+    BABEL_DEFAULT_TIMEZONE = 'UTC'
 
 
 users = {
@@ -37,50 +20,44 @@ users = {
 }
 
 
-def get_user() -> Union[Dict, None]:
-    """
-    funciton returns user dictionary or None if ID value can't be found
-    """
-    id = request.args.get('login_as', None)
-    if id and int(id) in users.keys():
-        return users.get(int(id))
-    return None
-
-
-@app.before_request
-def before_request():
-    """
-    func adds user to flask.g if user is found
-    """
-    usr = get_user()
-    g.user = usr
+app = Flask(__name__)
+app.config.from_object(Config)
+babel = Babel(app)
 
 
 @babel.localeselector
 def get_locale():
-    """
-    func selects and returns best language match based on supported languages
-    """
-    locn = request.args.get('locale')
-    if locn in app.config['LANGUAGES']:
-        return locn
-    if g.user:
-        locn = g.user.get('locale')
-        if locn and locn in app.config['LANGUAGES']:
-            return locn
-    locn = request.headers.get('locale', None)
-    if locn in app.config['LANGUAGES']:
-        return locn
-    return request.accept_languages.best_match(app.config['LANGUAGES'])
+    """returns best match to the accept languages header"""
+    req_locale = request.args.get('locale')
+    if req_locale and req_locale in app.config['LANGUAGES']:
+        return req_locale
+    try:
+        if g.user.get('locale') in app.config['LANGUAGES']:
+            return g.user.get('locale')
+    except AttributeError:
+        if 'Accept-Language' in request.headers:
+            return request.accept_languages.best_match(app.config['LANGUAGES'])
 
 
-@app.route('/', strict_slashes=False)
-def index() -> str:
-    """
-    func handles '/' route
-    """
-    return render_template('5-index.html')
+def get_user(user_id):
+    """gets and returns a user from users if user_id is provided"""
+    if user_id and int(user_id) in users:
+        return users.get(int(user_id))
+
+
+@app.before_request
+def before_request():
+    """makes a user globally visible if logged in with user id"""
+    user = get_user(request.args.get('login_as'))
+    if user:
+        g.user = user
+
+
+@app.route('/')
+def index():
+    """returns and displays html page with possible user login"""
+    return render_template('6-index.html')
 
 
 if __name__ == "__main__":
-    app.run(port="5000", host="0.0.0.0", debug=True)
+    app.run(port='5000', host="0.0.0.0", debug=True)

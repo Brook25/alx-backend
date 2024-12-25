@@ -1,30 +1,25 @@
 #!/usr/bin/env python3
-"""
-module contains Flask app
-"""
-from flask import Flask, render_template
+"""configures and implements flask app and babel"""
+from flask import Flask
+from flask import render_template
 from flask_babel import Babel
 
 
 class Config(object):
-    """
-    class for configuration for Babel
-    """
-    LANGUAGES = ["en", "fr"]
+    """Config class for app"""
+    LANGUAGES = ['en', 'fr']
     BABEL_DEFAULT_LOCALE = "en"
     BABEL_DEFAULT_TIMEZONE = "UTC"
 
 
 app = Flask(__name__)
-app.config.from_object(Config)
 babel = Babel(app)
+app.config.from_object(Config)
 
 
 @app.route('/', strict_slashes=False)
-def index() -> str:
-    """
-    function handles / route
-    """
+def home() -> str:
+    """Returns an html page"""
     return render_template('1-index.html')
 
 

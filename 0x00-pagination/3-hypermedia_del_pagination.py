@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Module contains class Deletion-resilient hypermedia pagination
+Deletion-resilient hypermedia pagination
 """
 
 import csv
@@ -40,27 +40,19 @@ class Server:
         return self.__indexed_dataset
 
     def get_hyper_index(self, index: int = None, page_size: int = 10) -> Dict:
+        """Get indexed dataset values
         """
-        method takes two integer args and returns a dictionary
-        """
-        d_set = self.indexed_dataset()
-        d_length = len(d_set)
-        assert 0 <= index < d_length
-        res = {}
+        ix_dataset = self.indexed_dataset()
+        max_ix = max(ix_dataset.keys())
+        assert index and index <= max_ix
+        keys = sorted(ix_dataset.keys())
         data = []
-        res['index'] = index
-        for i in range(page_size):
-            while True:
-                cur = d_set.get(index)
-                index += 1
-                if cur is not None:
-                    break
-            data.append(cur)
-
-        res['data'] = data
-        res['page_size'] = len(data)
-        if d_set.get(index):
-            res['next_index'] = index
-        else:
-            res['next_index'] = None
-        return res
+        for i in range(len(keys)):
+            if keys[i] >= index:
+                for j in range(page_size):
+                    if i + j < len(keys):
+                        data += [ix_dataset[keys[i + j]]]
+                next_index = keys[i + j] + 1
+                break
+        return {'index': index, 'next_index': next_index,
+                'page_size': page_size, 'data': data}

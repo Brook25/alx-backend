@@ -1,43 +1,33 @@
 #!/usr/bin/env python3
-""" module contains class LIFOcache
+"""LIFO caching system
 """
 
 from base_caching import BaseCaching
 
 
 class LIFOCache(BaseCaching):
+    """LIFO caching system
     """
-    class that defines a LIFO caching system
-    """
-
     def __init__(self):
-        """
-        Init method that initializes an instance
+        """Init cache system
         """
         super().__init__()
-        self.order = []
+        self.discard = None
 
     def put(self, key, item):
+        """Adds data to caching system
         """
-        mehtod caches a key, value pair
-        """
-        if key is None or item is None:
-            pass
-        else:
-            datalen = len(self.cache_data)
-            if datalen >= BaseCaching.MAX_ITEMS and key not in self.cache_data:
-                print("DISCARD: {}".format(self.order[-1]))
-                del self.cache_data[self.order[-1]]
-                del self.order[-1]
-            if key in self.order:
-                del self.order[self.order.index(key)]
-            self.order.append(key)
-            self.cache_data[key] = item
+        if not (key and item):
+            return
+        self.cache_data[key] = item
+        if len(self.cache_data) > self.MAX_ITEMS:
+            self.cache_data.pop(self.discard)
+            print('DISCARD: {}'.format(self.discard))
+        if len(self.cache_data) == self.MAX_ITEMS:
+            self.discard = key
 
     def get(self, key):
+        """Returns value associated with key in cache
         """
-            method returns value linked to the given key
-        """
-        if key is not None and key in self.cache_data.keys():
-            return self.cache_data[key]
-        return None
+        if key:
+            return self.cache_data.get(key)
